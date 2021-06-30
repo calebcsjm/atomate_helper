@@ -1,0 +1,1 @@
+- Write function to query dielectric properties from materials collection and add to query_properties.py
