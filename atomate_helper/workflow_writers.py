@@ -2,7 +2,7 @@ from helper.core import get_material_ids
 from fireworks import LaunchPad
 from atomate.vasp.workflows.presets.core import wf_dielectric_constant
 
-def add_dielectric_wflows(pretty_formulas, launchpad, workflow_cap=100):
+def add_dielectric_prettyform(pretty_formulas, launchpad, workflow_cap=100):
     """ Adds dielectric workflows for each material in a list of inputs, and then returns a list with pertinant information
 
     Parameters:
