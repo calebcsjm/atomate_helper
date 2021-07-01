@@ -1,4 +1,5 @@
 from helper_core import get_material_ids
+from atomate.vasp.database import VaspCalcDb
 
 def add_keywords_by_id(material_ids, keywords, path_to_my_db_json):
     ''' Adds keywords to mongodb docs in the materials collection (a summary doc created by builders)
@@ -13,7 +14,6 @@ def add_keywords_by_id(material_ids, keywords, path_to_my_db_json):
     
     '''
 
-    from atomate.vasp.database import VaspCalcDb
     atomate_db = VaspCalcDb.from_db_file(PATH_TO_MY_DB_JSON)
     materials_collection = atomate_db.db['materials']
     
@@ -44,7 +44,8 @@ def add_keywords_by_formula(pretty_formulas, keywords):
         keywords (str list): the keywords you would like added to the document, e.g. ["09/2021", "battery material"]
         
     Returns: 
-        None 
+        missing_ids (str list): list of mp-ids that were not found in the materials collection
+        
     '''
     missing_ids = []
     for formula in pretty_formulas:
@@ -53,3 +54,4 @@ def add_keywords_by_formula(pretty_formulas, keywords):
         missing_ids.extend(missing)
         
     print("The following ids were not found in the database: ", missing_ids)
+    return missing_ids
