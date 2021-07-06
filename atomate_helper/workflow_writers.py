@@ -1,4 +1,4 @@
-from helper.core import get_material_ids
+from helper_core import get_material_ids
 from fireworks import LaunchPad
 from pymatgen.ext.matproj import MPRester
 import numpy as np
@@ -100,7 +100,7 @@ def add_dielectric_prettyform(pretty_formulas, launchpad, workflow_cap=100):
         mp_ids = get_material_ids(formula)
 
         #first, test to ensure we haven't added too many at once
-        if (total_wflows_added + len(material_ids)) > workflow_cap:
+        if (total_wflows_added + len(mp_ids)) > workflow_cap:
             print('''Max number of workflows ({}) exceeded. To avoid crashing MongoDB, please wait for these to finish before adding any more. Resume with formula: {}'''.format(workflow_cap, formula))
             return
 
