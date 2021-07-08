@@ -37,8 +37,7 @@ I bolded lines that are added or altered from those suggested in the installatio
 
 
 Db.json:
-<pre><code>
-{
+<pre><code>{
 	"host":"mongodb+srv://cluster0.9esxz.mongodb.net",
 	"port":27017,
 	"database":"<<database_name>>",
@@ -53,8 +52,7 @@ Db.json:
 </code></pre>
 
 My_fireworker.yaml:
-<pre><code>
-name: <<worker_name>>
+<pre><code>name: <<worker_name>>
 category: ''
 query: '{}'
 env:
@@ -64,8 +62,7 @@ scratch_dir: null
 </code></pre>
 
 My_launchpad.yaml:
-<pre><code>
-host: mongodb+srv://cluster0.9esxz.mongodb.net
+<pre><code>host: mongodb+srv://cluster0.9esxz.mongodb.net
 port: 27017
 name: <<database_name>>
 username: <<admin_username>>
@@ -80,8 +77,7 @@ wf_user_indices: []
 </code></pre>
 
 My_qadapter.yaml: 
-<pre><code>
-_fw_name: CommonAdapter
+<pre><code>_fw_name: CommonAdapter
 _fw_q_type: SLURM
 ***_fw_template_file: /<<path>>/atomate/config/SLURM_template.txt***
 rocket_launch: rlaunch -c /<<path>>/atomate/config rapidfire
