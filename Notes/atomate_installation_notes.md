@@ -31,28 +31,26 @@ This is meant as a supplement to the instructions found on the Atomate Installat
     - If you are getting this in the FW_job<<number>>.error file, then the system administrators have not yet enabled access to the cloud database – see the db.json section
 
 
-**Full text for Files:**
-
-I bolded lines that are added or altered from those suggested in the installation guide. Also, if anyone is like me and did not understand the <<>> notation, it indicates a substitution, and you remove it when you add your info – for example, if your database is called atomate_database, then "<<database_name>>" becomes “atomate_database.”
-
+**Full text for Files:**  
+I bolded lines that are added or altered from those suggested in the installation guide. Replace the values with the information for you database - if your database is named *dielectric_runs*, then replace *database_name* in the db.json file with *dielectric_runs* (preserving quotation marks where appropriate). 
 
 Db.json:
 <pre><code>{
 	"host":"mongodb+srv://cluster0.9esxz.mongodb.net",
 	"port":27017,
-	"database":"<<database_name>>",
-	"collection":"<<collection_name>>",
-	"admin_user":"<<admin_username>>",
-	"admin_password":"<<admin_password>>",
-	"readonly_user":"<<read_user_name>>",
-	"readonly_password":"<<user_password>>",
+	"database":"database_name",
+	"collection":"collection_name",
+	"admin_user":"admin_username",
+	"admin_password":"admin_password",
+	"readonly_user":"read_user_name",
+	"readonly_password":"user_password",
 	"aliases":{},
 	<b><i>"authsource":"admin"</i></b>
 }
 </code></pre>
 
 My_fireworker.yaml:
-<pre><code>name: <<worker_name>>
+<pre><code>name: worker_name
 category: ''
 query: '{}'
 env:
@@ -64,9 +62,9 @@ scratch_dir: null
 My_launchpad.yaml:
 <pre><code>host: mongodb+srv://cluster0.9esxz.mongodb.net
 port: 27017
-name: <<database_name>>
-username: <<admin_username>>
-password: <<admin_password>>
+name: database_name
+username: admin_username
+password: admin_password
 ssl_ca_file: null
 logdir: null
 strm_lvl: INFO
@@ -79,8 +77,8 @@ authsource: admin</i></b>
 My_qadapter.yaml: 
 <pre><code>_fw_name: CommonAdapter
 _fw_q_type: SLURM
-<b><i>_fw_template_file: /<<path>>/atomate/config/SLURM_template.txt</i></b>
-rocket_launch: rlaunch -c /<<path>>/atomate/config rapidfire
+<b><i>_fw_template_file: /path/atomate/config/SLURM_template.txt</i></b>
+rocket_launch: rlaunch -c /path/atomate/config rapidfire
 <b><i>nodes: 1
 ntasks: 1
 mem_per_cpu: 12G</i></b>
@@ -90,5 +88,5 @@ account: null
 job_name: null
 pre_rocket: null
 post_rocket: null
-logdir: /<<path>>/atomate/logs
+logdir: /path/atomate/logs
 </code></pre>
