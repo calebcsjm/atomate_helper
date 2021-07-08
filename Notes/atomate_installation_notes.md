@@ -37,7 +37,7 @@ I bolded lines that are added or altered from those suggested in the installatio
 
 
 Db.json:
-<code>
+<pre><code>
 {
 	"host":"mongodb+srv://cluster0.9esxz.mongodb.net",
 	"port":27017,
@@ -50,10 +50,10 @@ Db.json:
 	"aliases":{},
 	***"authsource":"admin"***
 }
-</code>
+</code></pre>
 
 My_fireworker.yaml:
-<code>
+<pre><code>
 name: <<worker_name>>
 category: ''
 query: '{}'
@@ -61,10 +61,10 @@ env:
     db_file: /<<path>>/atomate/config/db.json
     vasp_cmd: ***/fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi***
 scratch_dir: null
-</code>
+</code></pre>
 
 My_launchpad.yaml:
-<code>
+<pre><code>
 host: mongodb+srv://cluster0.9esxz.mongodb.net
 port: 27017
 name: <<database_name>>
@@ -77,10 +77,10 @@ user_indices: []
 wf_user_indices: []
 ***ssl: True***
 ***authsource: admin***
-</code>
+</code></pre>
 
 My_qadapter.yaml: 
-<code>
+<pre><code>
 _fw_name: CommonAdapter
 _fw_q_type: SLURM
 ***_fw_template_file: /<<path>>/atomate/config/SLURM_template.txt***
@@ -95,4 +95,4 @@ job_name: null
 pre_rocket: null
 post_rocket: null
 logdir: /<<path>>/atomate/logs
-</code>
+</code></pre>
