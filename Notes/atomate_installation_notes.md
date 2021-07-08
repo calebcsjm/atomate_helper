@@ -20,7 +20,7 @@ This is meant as a supplement to the instructions found on the Atomate Installat
    - The default file in the installation tutorial does not contain the amount of memory requested per cpu, which is a requirement for submission on the BYU system (and it also may have needed ntasks and nodes). 
    - One way to get around that is to add the SLURM_template.txt to your config directory, reference it as a template, and then add the information for the memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt)
    - For further clarification, see the full text below. 
-   - The exact specifications for the runs may depend on the size of job you are using, but I have found using “nodes: 1,” “ntasks: 1,” “mem-per-cpu: 24G,” and “walltime: 24:00:00” to provide enough wiggle room in memory to prevent crashes. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
+   - The exact specifications for the runs may depend on the size of job you are using, but I have found using “nodes: 1,” “ntasks: 1,” “mem-per-cpu: 12G,” and “walltime: 24:00:00” to provide enough wiggle room in memory to prevent most crashes. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
 7. Pymatgen and Potcars: I recommend viewing the pymatgen instructions at [POTCAR Setup](https://pymatgen.org/installation.html#potcar-setup), which are more detailed than those at on the atomate website. Note: if you copy the potpaw_PBE file, you will have to run the `pmg config` command on the directory ABOVE potpaw_PBE, or it won't do it properly. For example, if you copy the potpaw_PBE folder in a folder called potcarTempStorage, you would run `pmg config -p potcarTempStorage <MY_PSP>`
 8. Materials API Key: See the following instructions from the bottom of the pymatgen docs Usage section:  [API Setup](https://pymatgen.org/usage.html#setting-the-pmg-mapi-key-in-the-config-file)  This personal key can be generated on the Materials project website.
 9. Bash Profile:
@@ -47,7 +47,7 @@ Db.json:
 	"readonly_user":"<<read_user_name>>",
 	"readonly_password":"<<user_password>>",
 	"aliases":{},
-	***"authsource":"admin"***
+	<b><i>"authsource":"admin"</i></b>
 }
 </code></pre>
 
@@ -57,7 +57,7 @@ category: ''
 query: '{}'
 env:
     db_file: /<<path>>/atomate/config/db.json
-    vasp_cmd: ***/fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi***
+    <b><i>vasp_cmd: /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi</i></b>
 scratch_dir: null
 </code></pre>
 
@@ -72,18 +72,18 @@ logdir: null
 strm_lvl: INFO
 user_indices: []
 wf_user_indices: []
-***ssl: True***
-***authsource: admin***
+<b><i>ssl: True
+authsource: admin</i></b>
 </code></pre>
 
 My_qadapter.yaml: 
 <pre><code>_fw_name: CommonAdapter
 _fw_q_type: SLURM
-***_fw_template_file: /<<path>>/atomate/config/SLURM_template.txt***
+<b><i>_fw_template_file: /<<path>>/atomate/config/SLURM_template.txt</i></b>
 rocket_launch: rlaunch -c /<<path>>/atomate/config rapidfire
-***nodes: 1***
-***ntasks: 2***
-***mem_per_cpu: 10G***
+<b><i>nodes: 1
+ntasks: 1
+mem_per_cpu: 12G</i></b>
 walltime: 24:00:00
 queue: null
 account: null
