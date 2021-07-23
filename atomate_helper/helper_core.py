@@ -21,3 +21,32 @@ def get_material_ids(pretty_formula):
         material_ids.append(entry['task_id'])
 
     return material_ids
+
+def get_material_id_count(pretty_formulas):
+    """ Function that determines the number of structures in the materials database for a given pretty formula,
+    and prints the number for each. 
+    
+    Parameters:
+        pretty_formulas (str list): a list of pretty formulas. Ex. ['NiS', 'ZrO2']
+    Returns:
+        None
+    
+    """
+    from pymatgen.ext.matproj import MPRester
+    m = MPRester()
+    
+    structure_count = {}
+    
+    for pretty_formula in pretty_formulas:
+        material_ids = []
+
+        #gets all the materials id's (mp-___) from the MP for the given compound
+        material_data = m.query(criteria={"pretty_formula": pretty_formula}, properties=["task_id"])
+
+        #extracts all the materials id's from the dictionary returned by the query
+        for entry in material_data:
+            material_ids.append(entry['task_id'])
+
+        structure_count[pretty_formula] = len(material_ids)
+    
+    print(structure_count)
