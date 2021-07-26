@@ -128,7 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Sensitive project files 
+# Sensitive or superfluous project files 
 atomate_helper/password.txt
 atomate_helper/api_key.txt
 atomate_helper/db.json
+Notes/todo_list.md
