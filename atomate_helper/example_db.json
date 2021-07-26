@@ -1,0 +1,12 @@
+{
+	"host":"mongodb+srv://cluster0.9esxz.mongodb.net",
+	"port":27017,
+	"database":"database_name",
+	"collection":"tasks",
+	"admin_user":"username",
+	"admin_password":"password",
+	"readonly_user":"readuser",
+	"readonly_password":"password",
+	"aliases":{},
+	"authsource":"admin"
+}
