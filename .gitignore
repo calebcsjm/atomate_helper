@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Sensitive project files 
+atomate_helper/password.txt
+atomate_helper/user_api_key.txt
+atomate_helper/example_db.json
