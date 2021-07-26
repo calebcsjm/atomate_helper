@@ -6,8 +6,7 @@ This is meant as a supplement to the instructions found on the Atomate Installat
 4. Db.json file:
    - The port is just 27017
    - Add the following line to the end `"authsource":"admin"`
-   - The hostname can be somewhat particular, it should be of the form `"host":"mongodb+srv://cluster0.9esxz.mongodb.net."` You may need to delete some stuff in the middle. You can find the name of the host if you go on the mongodb website, then under Clusters, click on Connect for the cluster you would like to connect to, then for “Choose a connection method” select “Connect your application,” then select Python under the driver and the whatever version you are using. For me, that generated a line “mongodb+srv://<username>:<password>@cluster0.9esxz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority,” which I deleted stuff from until it was simply “mongodb+srv://cluster0.9esxz.mongodb.net."
-      - I found this explanation on another site: Use this connection string format:mongodb+srv://:@<cluster_name>.mongodb.net/. If you have a cluster's connection string with servers' names like:cluster0-_shard-00-00-_jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this:cluster0-jxeqq.mongodb.net
+   - The hostname can be somewhat particular. I found this explanation on another site: Use this connection string format:mongodb+srv://:@<cluster_name>.mongodb.net/. If you have a cluster's connection string with servers' names like:cluster0-_shard-00-00-_jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0-jxeqq.mongodb.net
     - ***NOTE:*** The system administrators for the supercomputer will have to add the IP address of the cluster to their whitelist in order for it to connect while running jobs
 4. My_fireworker.yaml
     - The vasp_cmd line was somewhat confusing. What ended up working was providing the path to the executable for vasp, which in my case was /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi. Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
@@ -20,7 +19,7 @@ This is meant as a supplement to the instructions found on the Atomate Installat
    - The default file in the installation tutorial does not contain the amount of memory requested per cpu, which is a requirement for submission on the BYU system (and it also may have needed ntasks and nodes). 
    - One way to get around that is to add the SLURM_template.txt to your config directory, reference it as a template, and then add the information for the memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt)
    - For further clarification, see the full text below. 
-   - The exact specifications for the runs may depend on the size of job you are using, but I have found using “nodes: 1,” “ntasks: 1,” “mem-per-cpu: 12G,” and “walltime: 24:00:00” to provide enough wiggle room in memory to prevent most crashes. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
+   - The exact specifications for the runs may depend on the size of job you are using. I typically use “nodes: 1,” “ntasks: 4,” “mem-per-cpu: 8G,” and “walltime: 24:00:00,” but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
 7. Pymatgen and Potcars: I recommend viewing the pymatgen instructions at [POTCAR Setup](https://pymatgen.org/installation.html#potcar-setup), which are more detailed than those at on the atomate website. Note: if you copy the potpaw_PBE file, you will have to run the `pmg config` command on the directory ABOVE potpaw_PBE, or it won't do it properly. For example, if you copy the potpaw_PBE folder in a folder called potcarTempStorage, you would run `pmg config -p potcarTempStorage <MY_PSP>`
 8. Materials API Key: See the following instructions from the bottom of the pymatgen docs Usage section:  [API Setup](https://pymatgen.org/usage.html#setting-the-pmg-mapi-key-in-the-config-file)  This personal key can be generated on the Materials project website.
 9. Bash Profile:
@@ -55,7 +54,7 @@ category: ''
 query: '{}'
 env:
     db_file: /<<path>>/atomate/config/db.json
-    <b><i>vasp_cmd: /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi</i></b>
+    <b><i>vasp_cmd: srun /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi</i></b>
 scratch_dir: null
 </code></pre>
 
@@ -80,8 +79,8 @@ _fw_q_type: SLURM
 <b><i>_fw_template_file: /path/atomate/config/SLURM_template.txt</i></b>
 rocket_launch: rlaunch -c /path/atomate/config rapidfire
 <b><i>nodes: 1
-ntasks: 1
-mem_per_cpu: 12G</i></b>
+ntasks: 4
+mem_per_cpu: 8G</i></b>
 walltime: 24:00:00
 queue: null
 account: null
