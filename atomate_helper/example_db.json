@@ -1,12 +1,12 @@
 {
 	"host":"mongodb+srv://cluster0.9esxz.mongodb.net",
 	"port":27017,
-	"database":"database_name",
+	"database":"introproj",
 	"collection":"tasks",
-	"admin_user":"username",
-	"admin_password":"password",
+	"admin_user":"calebcsjm",
+	"admin_password":"mimamima1",
 	"readonly_user":"readuser",
-	"readonly_password":"password",
+	"readonly_password":"mimamima1",
 	"aliases":{},
 	"authsource":"admin"
 }
