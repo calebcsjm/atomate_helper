@@ -14,7 +14,7 @@ def add_keywords_by_id(material_ids, keywords, path_to_my_db_json):
     
     '''
 
-    atomate_db = VaspCalcDb.from_db_file(PATH_TO_MY_DB_JSON)
+    atomate_db = VaspCalcDb.from_db_file(path_to_my_db_json)
     materials_collection = atomate_db.db['materials']
     
     missing_ids = []
@@ -35,13 +35,14 @@ or which document it looks for to update. Then the second dictionary contains th
 contents of that field. 
 '''
 
-def add_keywords_by_formula(pretty_formulas, keywords):
+def add_keywords_by_formula(pretty_formulas, keywords, path_to_my_db_json):
     ''' Written as a companion to the add dielectric workflows function, it adds the keywords to all the variations of a 
     given pretty forumla for which we have results in the mongodb (see also add_keywords_by_id function)
     
     Parameters:
         pretty_formulas (str list): a list of compounds with their pretty formulas. Ex: ['NiS', 'MgO']
         keywords (str list): the keywords you would like added to the document, e.g. ["09/2021", "battery material"]
+        path_to_my_db_json (str): the path to your db.sjon file, eg. '/home/calebh27/atomate/config/db.json'
         
     Returns: 
         missing_ids (str list): list of mp-ids that were not found in the materials collection
@@ -50,7 +51,7 @@ def add_keywords_by_formula(pretty_formulas, keywords):
     missing_ids = []
     for formula in pretty_formulas:
         ids = get_material_ids(formula)
-        missing = add_keywords_by_id(ids, keywords)
+        missing = add_keywords_by_id(ids, keywords, path_to_my_db_json)
         missing_ids.extend(missing)
         
     print("The following ids were not found in the database: ", missing_ids)
