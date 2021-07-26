@@ -12,7 +12,7 @@ def get_material_ids(pretty_formula):
 
     material_ids = []
 
-    with open("user_api_key.txt",'r') as filename:
+    with open("api_key.txt",'r') as filename:
         API_KEY = filename.readlines()[0]
 
     with MPRester(API_KEY) as m:
@@ -39,7 +39,7 @@ def get_material_id_count(pretty_formulas):
     
     structure_count = {}
     
-    with open("user_api_key.txt",'r') as filename:
+    with open("api_key.txt",'r') as filename:
         API_KEY = filename.readlines()[0]
 
     for pretty_formula in pretty_formulas:

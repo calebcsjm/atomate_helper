@@ -8,9 +8,6 @@ from atomate.vasp.database import VaspCalcDb
 from pymatgen.core import Structure
 import numpy as np
 
-# create the atomate db from your db.json
-PATH_TO_MY_DB_JSON = '/home/calebh27/atomate/config/db.json'
-
 def get_epsilon_staticM_mpid(mp_ids, dbjson_path):
     ''' Returns the epsilon static matrices from a list of materials (mp-ids) in the materials collection of the mongodb
     
