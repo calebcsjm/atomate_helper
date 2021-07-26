@@ -9,16 +9,19 @@ def get_material_ids(pretty_formula):
 
     """
     from pymatgen.ext.matproj import MPRester
-    m = MPRester()
 
     material_ids = []
 
-    #gets all the materials id's (mp-___) from the MP for the given compound
-    material_data = m.query(criteria={"pretty_formula": pretty_formula}, properties=["task_id"])
+    with open("user_api_key.txt",'r') as filename:
+        API_KEY = filename.readlines()[0]
 
-    #extracts all the materials id's from the dictionary returned by the query
-    for entry in material_data:
-        material_ids.append(entry['task_id'])
+    with MPRester(API_KEY) as m:
+        #gets all the materials id's (mp-___) from the MP for the given compound
+        material_data = m.query(criteria={"pretty_formula": pretty_formula}, properties=["task_id"])
+
+        #extracts all the materials id's from the dictionary returned by the query
+        for entry in material_data:
+            material_ids.append(entry['task_id'])
 
     return material_ids
 
@@ -33,20 +36,23 @@ def get_material_id_count(pretty_formulas):
     
     """
     from pymatgen.ext.matproj import MPRester
-    m = MPRester()
     
     structure_count = {}
     
+    with open("user_api_key.txt",'r') as filename:
+        API_KEY = filename.readlines()[0]
+
     for pretty_formula in pretty_formulas:
         material_ids = []
 
-        #gets all the materials id's (mp-___) from the MP for the given compound
-        material_data = m.query(criteria={"pretty_formula": pretty_formula}, properties=["task_id"])
+        with MPRester(API_KEY) as m:
+            #gets all the materials id's (mp-___) from the MP for the given compound
+            material_data = m.query(criteria={"pretty_formula": pretty_formula}, properties=["task_id"])
 
-        #extracts all the materials id's from the dictionary returned by the query
-        for entry in material_data:
-            material_ids.append(entry['task_id'])
+            #extracts all the materials id's from the dictionary returned by the query
+            for entry in material_data:
+                material_ids.append(entry['task_id'])
 
-        structure_count[pretty_formula] = len(material_ids)
+            structure_count[pretty_formula] = len(material_ids)
     
     print(structure_count)
