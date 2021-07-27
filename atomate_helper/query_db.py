@@ -55,3 +55,33 @@ def get_epsilon_staticM_prettyform(pretty_formulas, dbjson_path):
         mp_ids.extend(get_material_ids(pretty_formula))
     
     return get_epsilon_staticM_mpid(mp_ids, dbjson_path)
+
+def get_materials_with_keyword(keyword, path_to_my_db_json):
+    '''Given a keyword, returns all the materials with that keyword.
+
+    Parameters:
+        keyword (str): The keyword you wish to find
+        path_to_my_db_json (str): the path to your db.sjon file, eg. '/home/calebh27/atomate/config/db.json'
+    Returns:
+        matching_mpids (str list): a list of all the mp-ids that have that keyword
+    
+    '''
+
+    # set up the connection to the collection
+    atomate_db = VaspCalcDb.from_db_file(path_to_my_db_json)
+    materials_collection = atomate_db.db['materials']
+    
+    matching_mpids = []
+
+    # Find all the docs with the keyword
+    materials_found = materials_collection.find({'keywords': keyword})
+
+    for material in materials_found:
+        mp_id = material["mpids"]
+        matching_mpids.extend(mp_id)
+        # print out a line with more info on the matches (more can be added, as desired)
+        print("Formula:", material["formula_pretty"], "mp-id:", mp_id, "Space Group:", material["sg_symbol"])
+    
+    print("\nList of all matching ids:", matching_mpids)
+
+    return matching_mpids
