@@ -132,4 +132,5 @@ dmypy.json
 atomate_helper/password.txt
 atomate_helper/api_key.txt
 atomate_helper/db.json
+atomate_helper/current_stuff.ipynb
 Notes/todo_list.md
