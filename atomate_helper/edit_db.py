@@ -22,7 +22,7 @@ def add_keywords_by_id(material_ids, keywords, path_to_my_db_json):
         #tests to see if the id is in the database 
         found = materials_collection.find_one({'mpids': mp_id})
         if found is not None:
-            materials_collection.update_one({'mpids': mp_id}, { "$set": { "keywords": keywords } })
+            materials_collection.update_one({'mpids': mp_id}, { "$push": { "keywords": {"$each": keywords} } })
         else:
             missing_ids.append(mp_id)
     
@@ -53,6 +53,9 @@ def add_keywords_by_formula(pretty_formulas, keywords, path_to_my_db_json):
         ids = get_material_ids(formula)
         missing = add_keywords_by_id(ids, keywords, path_to_my_db_json)
         missing_ids.extend(missing)
-        
-    print("The following ids were not found in the database: ", missing_ids)
+    
+    if len(missing_ids) == 0:
+        print("All values found and updated successfully")
+    else:
+        print("The following ids were not found in the database: ", missing_ids)
     return missing_ids
