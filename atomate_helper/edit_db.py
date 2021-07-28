@@ -36,8 +36,8 @@ contents of that field.
 '''
 
 def add_keywords_by_formula(pretty_formulas, keywords, path_to_my_db_json):
-    ''' Written as a companion to the add dielectric workflows function, it adds the keywords to all the variations of a 
-    given pretty forumla for which we have results in the mongodb (see also add_keywords_by_id function)
+    ''' Adds the keywords to all the variations of a given pretty forumla for which we have results in the
+    mongodb (see also add_keywords_by_id function)
     
     Parameters:
         pretty_formulas (str list): a list of compounds with their pretty formulas. Ex: ['NiS', 'MgO']
@@ -58,4 +58,31 @@ def add_keywords_by_formula(pretty_formulas, keywords, path_to_my_db_json):
         print("All values found and updated successfully")
     else:
         print("The following ids were not found in the database: ", missing_ids)
+    return missing_ids
+
+def remove_keywords_by_id(material_ids, keywords_to_remove, path_to_my_db_json):
+    ''' Removes keywords to mongodb docs in the materials collection (a summary doc created by builders)
+    
+    Parameters: 
+        material_id (str list): the mp-ids of the substances you want to update, e.g. ["mp-123", "mp-234"]
+        keywords_to_remove (str list): the keywords you would like added to the document, e.g. ["09/2021", "battery material"]
+        path_to_my_db_json (str): the path to your db.sjon file, eg. '/home/calebh27/atomate/config/db.json'
+        
+    Returns: 
+        missing_ids (str list): mp-ids that were not found in the database
+    
+    '''
+
+    atomate_db = VaspCalcDb.from_db_file(path_to_my_db_json)
+    materials_collection = atomate_db.db['materials']
+    
+    missing_ids = []
+    for mp_id in material_ids: 
+        #tests to see if the id is in the database 
+        found = materials_collection.find_one({'mpids': mp_id})
+        if found is not None:
+            materials_collection.update_one({'mpids': mp_id}, { "$pullAll": { "keywords": keywords_to_remove } })
+        else:
+            missing_ids.append(mp_id)
+    
     return missing_ids
