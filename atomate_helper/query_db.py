@@ -7,6 +7,7 @@ from helper_core import get_material_ids
 from atomate.vasp.database import VaspCalcDb
 from pymatgen.core import Structure
 import numpy as np
+import pandas as pd
 
 def get_epsilon_staticM_mpid(mp_ids, dbjson_path):
     ''' Returns the epsilon static matrices from a list of materials (mp-ids) in the materials collection of the mongodb
@@ -63,7 +64,7 @@ def get_materials_with_keyword(keyword, path_to_my_db_json):
         keyword (str): The keyword you wish to find
         path_to_my_db_json (str): the path to your db.sjon file, eg. '/home/calebh27/atomate/config/db.json'
     Returns:
-        matching_mpids (str list): a list of all the mp-ids that have that keyword
+        df: a pandas DataFrame containing some basic info on the materials with the keyword
     
     '''
 
@@ -71,17 +72,17 @@ def get_materials_with_keyword(keyword, path_to_my_db_json):
     atomate_db = VaspCalcDb.from_db_file(path_to_my_db_json)
     materials_collection = atomate_db.db['materials']
     
-    matching_mpids = []
+    data = []
 
     # Find all the docs with the keyword
     materials_found = materials_collection.find({'keywords': keyword})
 
     for material in materials_found:
         mp_id = material["mpids"]
-        matching_mpids.extend(mp_id)
-        # print out a line with more info on the matches (more can be added, as desired)
-        print("Formula:", material["formula_pretty"], "mp-id:", mp_id, "Space Group:", material["sg_symbol"])
+        # add match data to a data set (more can be added, as desired)
+        data.append([material["formula_pretty"], mp_id[0], material["sg_symbol"], material["keywords"]])
     
-    print("\nList of all matching ids:", matching_mpids)
+    # convert data to a dataframe
+    df = pd.DataFrame(data, columns=["Pretty Formula", "mp-id", "Space Group", "Keywords"])
 
-    return matching_mpids
+    return df
