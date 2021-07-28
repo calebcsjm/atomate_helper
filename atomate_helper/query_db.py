@@ -57,7 +57,7 @@ def get_epsilon_staticM_prettyform(pretty_formulas, dbjson_path):
     
     return get_epsilon_staticM_mpid(mp_ids, dbjson_path)
 
-def get_materials_with_keyword(keyword, path_to_my_db_json):
+def query_materials_with_keyword(keyword, path_to_my_db_json):
     '''Given a keyword, returns all the materials with that keyword.
 
     Parameters:
@@ -81,6 +81,33 @@ def get_materials_with_keyword(keyword, path_to_my_db_json):
         mp_id = material["mpids"]
         # add match data to a data set (more can be added, as desired)
         data.append([material["formula_pretty"], mp_id[0], material["sg_symbol"], material["keywords"]])
+    
+    # convert data to a dataframe
+    df = pd.DataFrame(data, columns=["Pretty Formula", "mp-id", "Space Group", "Keywords"])
+
+    return df
+
+def query_materials_by_id(mp_ids, path_to_my_db_json):
+    '''Given a list of mp-ids, returns basic info from the database on all of them.
+
+    Parameters:
+        mp_id (str list): The structures you want info on. eg. ["mp-594", "mp-1547"]
+        path_to_my_db_json (str): the path to your db.sjon file, eg. '/home/calebh27/atomate/config/db.json'
+    Returns:
+        df: a pandas DataFrame containing some basic info on the materials
+    
+    '''
+
+    # set up the connection to the collection
+    atomate_db = VaspCalcDb.from_db_file(path_to_my_db_json)
+    materials_collection = atomate_db.db['materials']
+    
+    data = []
+
+    for mp_id in mp_ids:
+        material = materials_collection.find_one({'mpids': mp_id})
+        # add match data to a data set (more can be added, as desired)
+        data.append([material["formula_pretty"], mp_id, material["sg_symbol"], material["keywords"]])
     
     # convert data to a dataframe
     df = pd.DataFrame(data, columns=["Pretty Formula", "mp-id", "Space Group", "Keywords"])
