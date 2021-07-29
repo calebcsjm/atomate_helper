@@ -6,10 +6,10 @@ This is meant as a supplement to the instructions found on the Atomate Installat
 4. Db.json file:
    - The port is just 27017
    - Add the following line to the end `"authsource":"admin"`
-   - The hostname can be somewhat particular. I found this explanation on another site: Use this connection string format:mongodb+srv://:@<cluster_name>.mongodb.net/. If you have a cluster's connection string with servers' names like:cluster0-_shard-00-00-_jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0-jxeqq.mongodb.net
+   - The hostname can be somewhat particular. I found this explanation on another site - "Use this connection string format: `mongodb+srv://:@<cluster_name>.mongodb.net`. If you have a cluster's connection string with servers' names like: cluster0-_shard-00-00-_jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0-jxeqq.mongodb.net"
     - ***NOTE:*** The system administrators for the supercomputer will have to add the IP address of the cluster to their whitelist in order for it to connect while running jobs
 4. My_fireworker.yaml
-    - The vasp_cmd line was somewhat confusing. What ended up working was providing the path to the executable for vasp, which in my case was /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi. Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
+    - The vasp_cmd line was somewhat confusing. What ended up working was `srun /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi` (srun is the command to run it in parallel, and then the second part is the path to the executable). Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
 5. My_launchpad.yaml
     - Add the following two lines to the end: 
       - `ssl: True`
