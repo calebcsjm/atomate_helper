@@ -1,7 +1,8 @@
-from helper_core import get_material_ids
+from helper_core import get_material_ids, get_pretty_formula
 from fireworks import LaunchPad
 from pymatgen.ext.matproj import MPRester
 import numpy as np
+import pandas as pd
 
 #import prebuilt workflows
 from atomate.vasp.workflows.presets.core import wf_dielectric_constant
@@ -17,7 +18,7 @@ def print_launchpad_error():
                 'lp = LaunchPad(host="your_hostname", port=27017, name="db_name", username="your_username", password="your_password", ssl="true", authsource="admin")')
     
 
-def added_workflow_string_converter(task_ids_map, workflow_name, mp_id, formula=""):
+def added_workflow_list_converter(task_ids_map, workflow_name, mp_id, formula=""):
     ''' Creates a string containing the task ids, workflow name, mp-id, and the formula of the material (if provided)
     
     Parameters:
@@ -27,20 +28,20 @@ def added_workflow_string_converter(task_ids_map, workflow_name, mp_id, formula=
         formula (str): if the pretty formula is available, include it. Ex: 'NiS'
         
     Returns:
-        added_info (str): a formated string containing the information stripped from the variables provided
+        added_info (str list): a list containing the information stripped from the variables provided
         
     '''
     
-    added_info = ''
+    added_info = []
     
     #get the firetask ids
     task_ids = list(task_ids_map.values())
-    for count, value in enumerate(task_ids):
-        added_info += str(value)
-        if count < (len(task_ids) - 1):
-            added_info += "/"
-        else: 
-            added_info += ": " + formula + " " + mp_id + "  " + workflow_name
+    task_range = str(task_ids[0]) + "-" + str(task_ids[-1])
+
+    if formula == "":
+        formula = get_pretty_formula(mp_id)
+
+    added_info.extend([task_range, formula, mp_id, workflow_name])
             
     return added_info
 
@@ -53,7 +54,7 @@ def add_dielectric_mpid(mp_ids, launchpad):
         launchpad (object): A launchpad (link to MongoDB) created by the user
         
     Returns:
-        added_run_info(str list): contains the firetask id and material_id for each workflow added
+        df: A pandas dataframe containing the firetask ids and material_id for each workflow added
         
     '''
     
@@ -72,11 +73,14 @@ def add_dielectric_mpid(mp_ids, launchpad):
             print_launchpad_error()
             return
 
-        #create the info string for this workflow
-        added_info = added_workflow_string_converter(task_ids_map, 'dielectric', mp_id)
+        #create the info list for this workflow
+        added_info = added_workflow_list_converter(task_ids_map, 'dielectric', mp_id)
         added_run_info.append(added_info)
-        
-    return added_run_info
+
+    df = pd.DataFrame(added_run_info, columns=["Task ID Range", "Formula", "mp-id", "Workflow Type"])
+    print(df)
+
+    return df
     
     
 def add_dielectric_prettyform(pretty_formulas, launchpad, workflow_cap=100):
@@ -88,7 +92,7 @@ def add_dielectric_prettyform(pretty_formulas, launchpad, workflow_cap=100):
         workflow_cap (int): Too many connections can cause mongo to crash, so a cap has been added to help users avoid that
 
     Returns:
-        added_run_info(str list): contains the firetask id, name, and material_id for each workflow added
+        df: A pandas dataframe containing the firetask ids, formula, and material_id for each workflow added
 
     """
 
@@ -119,11 +123,14 @@ def add_dielectric_prettyform(pretty_formulas, launchpad, workflow_cap=100):
 
             total_wflows_added += 1
             
-            #create the info string for this workflow
-            added_info = added_workflow_string_converter(task_ids_map, 'dielectric', mp_id, formula)
+            #create the info list for this workflow
+            added_info = added_workflow_list_converter(task_ids_map, 'dielectric', mp_id, formula)
             added_run_info.append(added_info)
 
-    return added_run_info
+    df = pd.DataFrame(added_run_info, columns=["Task ID Range", "Formula", "mp-id", "Workflow Type"])
+    print(df)
+
+    return df
 
 
 def add_gibbs_mpid(mp_ids, launchpad):
@@ -134,7 +141,7 @@ def add_gibbs_mpid(mp_ids, launchpad):
         launchpad (object): A launchpad (link to MongoDB) created by the user
         
     Returns:
-        added_run_info(str list): contains the firetask id and material_id for each workflow added
+        df: A pandas dataframe containing the firetask ids and material_id for each workflow added
         
     '''
     
@@ -166,11 +173,14 @@ def add_gibbs_mpid(mp_ids, launchpad):
             print_launchpad_error()
             return
 
-        #create the info string for this workflow
-        added_info = added_workflow_string_converter(task_ids_map, 'gibbs', mp_id)
+        #create the info list for this workflow
+        added_info = added_workflow_list_converter(task_ids_map, 'gibbs', mp_id)
         added_run_info.append(added_info)
         
-    return added_run_info
+    df = pd.DataFrame(added_run_info, columns=["Task ID Range", "Formula", "mp-id", "Workflow Type"])
+    print(df)
+
+    return df
 
 def add_bandstucture_mpid(mp_ids, launchpad):
     '''Adds bandstructure workflows for each mp-id in a list of inputs, and then returns a list with pertinant information
@@ -180,7 +190,7 @@ def add_bandstucture_mpid(mp_ids, launchpad):
         launchpad (object): A launchpad (link to MongoDB) created by the user
         
     Returns:
-        added_run_info(str list): contains the firetask id and material_id for each workflow added
+        df: A pandas dataframe containing the firetask ids and material_id for each workflow added
         
     '''
     
@@ -199,11 +209,14 @@ def add_bandstucture_mpid(mp_ids, launchpad):
             print_launchpad_error()
             return
 
-        #create the info string for this workflow
-        added_info = added_workflow_string_converter(task_ids_map, 'bandstructure', mp_id)
+        #create the info list for this workflow
+        added_info = added_workflow_list_converter(task_ids_map, 'bandstructure', mp_id)
         added_run_info.append(added_info)
         
-    return added_run_info
+    df = pd.DataFrame(added_run_info, columns=["Task ID Range", "Formula", "mp-id", "Workflow Type"])
+    print(df)
+
+    return df
 
 def add_elastic_mpid(mp_ids, launchpad):
     '''Adds elastic workflows for each mp-id in a list of inputs, and then returns a list with pertinant information
@@ -213,7 +226,7 @@ def add_elastic_mpid(mp_ids, launchpad):
         launchpad (object): A launchpad (link to MongoDB) created by the user
         
     Returns:
-        added_run_info(str list): contains the firetask id and material_id for each workflow added
+        df: A pandas dataframe containing the firetask ids and material_id for each workflow added
         
     '''
     
@@ -232,9 +245,11 @@ def add_elastic_mpid(mp_ids, launchpad):
             print_launchpad_error()
             return
 
-        #create the info string for this workflow
-        added_info = added_workflow_string_converter(task_ids_map, 'elastic', mp_id)
+        #create the info list for this workflow
+        added_info = added_workflow_list_converter(task_ids_map, 'elastic', mp_id)
         added_run_info.append(added_info)
         
-    return added_run_info
+    df = pd.DataFrame(added_run_info, columns=["Task ID Range", "Formula", "mp-id", "Workflow Type"])
+    print(df)
 
+    return df
