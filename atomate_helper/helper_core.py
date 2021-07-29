@@ -1,3 +1,17 @@
+from pymatgen.ext.matproj import MPRester
+
+# get the API Key
+with open("api_key.txt",'r') as filename:
+    API_KEY = filename.readlines()[0]
+
+def get_pretty_formula(mp_id):
+    '''Given a mp-id (str), queries the MP Database and returns the corresponding pretty formula (str)'''
+
+    with MPRester(API_KEY) as m:
+        structure = m.query(criteria={"task_id": mp_id}, properties=["pretty_formula"])
+
+    return structure[0]["pretty_formula"]
+
 def get_material_ids(pretty_formula):
     """ Function that queries the materials project database for all the materials ids matching a given pretty formula
 
@@ -8,12 +22,8 @@ def get_material_ids(pretty_formula):
         material_ids (list): a string list of the material ids for the compound, for example ['mp-594', 'mp-1547']
 
     """
-    from pymatgen.ext.matproj import MPRester
 
     material_ids = []
-
-    with open("api_key.txt",'r') as filename:
-        API_KEY = filename.readlines()[0]
 
     with MPRester(API_KEY) as m:
         #gets all the materials id's (mp-___) from the MP for the given compound
@@ -35,12 +45,8 @@ def get_material_id_count(pretty_formulas):
         None
     
     """
-    from pymatgen.ext.matproj import MPRester
     
     structure_count = {}
-    
-    with open("api_key.txt",'r') as filename:
-        API_KEY = filename.readlines()[0]
 
     for pretty_formula in pretty_formulas:
         material_ids = []
