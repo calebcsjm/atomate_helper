@@ -85,4 +85,8 @@ def remove_keywords_by_id(material_ids, keywords_to_remove, path_to_my_db_json):
         else:
             missing_ids.append(mp_id)
     
+    if len(missing_ids) == 0:
+        print("All values found and updated successfully")
+    else:
+        print("The following ids were not found in the database: ", missing_ids)
     return missing_ids
