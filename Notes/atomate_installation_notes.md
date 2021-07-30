@@ -19,7 +19,7 @@ This is meant as a supplement to the instructions found on the Atomate Installat
    - The default file in the installation tutorial does not contain the amount of memory requested per cpu, which is a requirement for submission on the BYU system (and it also may have needed ntasks and nodes). 
    - One way to get around that is to add the SLURM_template.txt to your config directory, reference it as a template, and then add the information for the memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt)
    - For further clarification, see the full text below. 
-   - The exact specifications for the runs may depend on the size of job you are using. I typically use “nodes: 1,” “ntasks: 4,” “mem-per-cpu: 8G,” and “walltime: 24:00:00,” but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
+   - The exact specifications for the runs may depend on the size of job you are using. I typically use “nodes: 1,” “ntasks: 4,” “mem-per-cpu: 4G,” and “walltime: 24:00:00,” but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
 7. Pymatgen and Potcars: I recommend viewing the pymatgen instructions at [POTCAR Setup](https://pymatgen.org/installation.html#potcar-setup), which are more detailed than those at on the atomate website. Note: if you copy the potpaw_PBE file, you will have to run the `pmg config` command on the directory ABOVE potpaw_PBE, or it won't do it properly. For example, if you copy the potpaw_PBE folder in a folder called potcarTempStorage, you would run `pmg config -p potcarTempStorage <MY_PSP>`
 8. Materials API Key: See the following instructions from the bottom of the pymatgen docs Usage section:  [API Setup](https://pymatgen.org/usage.html#setting-the-pmg-mapi-key-in-the-config-file)  This personal key can be generated on the Materials project website.
 9. Bash Profile:
@@ -28,6 +28,7 @@ This is meant as a supplement to the instructions found on the Atomate Installat
     - Also add `export FW_CONFIG_FILE=/<path>/atomate/config/FW_config.yaml,` or you will get connection errors with the mongo database
 10. [Errno 101] Network is unreachable: 
     - If you are getting this in the FW_job<<number>>.error file, then the system administrators have not yet enabled access to the cloud database – see the db.json section
+11. See the crontab_setup file on how to set up a crontab
 
 
 **Full text for Files:**  
@@ -80,7 +81,7 @@ _fw_q_type: SLURM
 rocket_launch: rlaunch -c /path/atomate/config rapidfire
 <b><i>nodes: 1
 ntasks: 4
-mem_per_cpu: 8G</i></b>
+mem_per_cpu: 4G</i></b>
 walltime: 24:00:00
 queue: null
 account: null
