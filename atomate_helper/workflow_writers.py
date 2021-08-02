@@ -1,21 +1,26 @@
 from helper_core import get_material_ids, get_pretty_formula
-from fireworks import LaunchPad
 from pymatgen.ext.matproj import MPRester
 import numpy as np
 import pandas as pd
 
-#import prebuilt workflows
+# import prebuilt workflows
 from atomate.vasp.workflows.presets.core import wf_dielectric_constant
 from atomate.vasp.workflows.presets.core import wf_elastic_constant
 from atomate.vasp.workflows.presets.core import wf_gibbs_free_energy
 from atomate.vasp.workflows.presets.core import wf_bandstructure
 
+# import incar modifier
+from atomate.vasp.powerups import add_modify_incar
+
+# get API Key
+with open("api_key.txt",'r') as filename:
+    API_KEY = filename.readlines()[0]
 
 def print_launchpad_error():
     '''Function to print error, to save space in code'''
     
     print("Error: Workflow was not added to the database. Please confirm that you have created the launchpad in the form:",
-                'lp = LaunchPad(host="your_hostname", port=27017, name="db_name", username="your_username", password="your_password", ssl="true", authsource="admin")')
+                'lp = LaunchPad(host="your_hostname", port=27017, name="db_name", username="your_admin_username", password="your_admin_password", ssl="true", authsource="admin")')
     
 
 def added_workflow_list_converter(task_ids_map, workflow_name, mp_id, formula=""):
@@ -45,6 +50,34 @@ def added_workflow_list_converter(task_ids_map, workflow_name, mp_id, formula=""
             
     return added_info
 
+def check_size_add_wf(structure, orig_wf, launchpad):
+    ''''Checks if the given structure has fewer than 30 elements, if it does, changes the INCAR settings
+    
+    Parameters:
+        structure - a pymatgen type structure
+        orig_wf - The original workflow that was created for the structure
+        launchpad - the launchpad
+    Returns:
+        task_ids_map - the map containing the task ids
+        
+    '''
+
+    if len(structure) > 30:
+        try:
+            task_ids_map = launchpad.add_wf(orig_wf)
+        except:
+            print_launchpad_error()
+            return
+    else:
+        # small structures should have lreal set to false: See  https://www.vasp.at/wiki/index.php/LREAL 
+        modified_wf = add_modify_incar(orig_wf, modify_incar_params={'incar_update': {'LREAL': "False"}})
+        try:
+            task_ids_map = launchpad.add_wf(modified_wf)
+        except:
+            print_launchpad_error()
+            return
+
+    return task_ids_map
 
 def add_dielectric_mpid(mp_ids, launchpad):
     '''Adds dielectric workflows for each mp-id in a list of inputs, and then returns a list with pertinant information
@@ -62,15 +95,15 @@ def add_dielectric_mpid(mp_ids, launchpad):
     
     for mp_id in mp_ids:
         #import the structure from the materials database
-        with MPRester() as mpr:
+        with MPRester(API_KEY) as mpr:
             struct = mpr.get_structure_by_material_id(mp_id)
 
-        # create and add the Workflow
+        # create the Workflow
         wf = wf_dielectric_constant(struct)
-        try:
-            task_ids_map = launchpad.add_wf(wf)
-        except:
-            print_launchpad_error()
+        # checks the size, then addds the workflow
+        task_ids_map = check_size_add_wf(struct, wf, launchpad)
+        # quits if it was not added successfully. 
+        if task_ids_map is None:
             return
 
         #create the info list for this workflow
@@ -106,19 +139,21 @@ def add_dielectric_prettyform(pretty_formulas, launchpad, workflow_cap=100):
         #first, test to ensure we haven't added too many at once
         if (total_wflows_added + len(mp_ids)) > workflow_cap:
             print('''Max number of workflows ({}) exceeded. To avoid crashing MongoDB, please wait for these to finish before adding any more. Resume with formula: {}'''.format(workflow_cap, formula))
-            return
+            df = pd.DataFrame(added_run_info, columns=["Task ID Range", "Formula", "mp-id", "Workflow Type"])
+            print(df)
+            return df
 
         for mp_id in mp_ids:
             #import the structure from the materials database
-            with MPRester() as mpr:
+            with MPRester(API_KEY) as mpr:
                 struct = mpr.get_structure_by_material_id(mp_id)
 
             # create and add the Workflow
             wf = wf_dielectric_constant(struct)
-            try:
-                task_ids_map = launchpad.add_wf(wf)
-            except:
-                print_launchpad_error()
+            # checks the size, then addds the workflow
+            task_ids_map = check_size_add_wf(struct, wf, launchpad)
+            # quits if it was not added successfully. 
+            if task_ids_map is None:
                 return
 
             total_wflows_added += 1
@@ -149,7 +184,7 @@ def add_gibbs_mpid(mp_ids, launchpad):
     
     for mp_id in mp_ids:
         #import the structure from the materials database
-        with MPRester() as mpr:
+        with MPRester(API_KEY) as mpr:
             struct = mpr.get_structure_by_material_id(mp_id)
 
         # Set up the deformation matricies, where each deformation is a 3x3 list of strains.
@@ -167,11 +202,12 @@ def add_gibbs_mpid(mp_ids, launchpad):
         
         #create workflow and add to mongodb
         wf = wf_gibbs_free_energy(struct, c)
-        try:
-            task_ids_map = launchpad.add_wf(wf)
-        except:
-            print_launchpad_error()
+        # checks the size, then addds the workflow
+        task_ids_map = check_size_add_wf(struct, wf, launchpad)
+        # quits if it was not added successfully. 
+        if task_ids_map is None:
             return
+
 
         #create the info list for this workflow
         added_info = added_workflow_list_converter(task_ids_map, 'gibbs', mp_id)
@@ -198,15 +234,15 @@ def add_bandstucture_mpid(mp_ids, launchpad):
     
     for mp_id in mp_ids:
         #import the structure from the materials database
-        with MPRester() as mpr:
+        with MPRester(API_KEY) as mpr:
             struct = mpr.get_structure_by_material_id(mp_id)
 
         # create and add the Workflow
         wf = wf_bandstructure(struct)
-        try:
-            task_ids_map = launchpad.add_wf(wf)
-        except:
-            print_launchpad_error()
+        # checks the size, then addds the workflow
+        task_ids_map = check_size_add_wf(struct, wf, launchpad)
+        # quits if it was not added successfully. 
+        if task_ids_map is None:
             return
 
         #create the info list for this workflow
@@ -234,15 +270,15 @@ def add_elastic_mpid(mp_ids, launchpad):
     
     for mp_id in mp_ids:
         #import the structure from the materials database
-        with MPRester() as mpr:
+        with MPRester(API_KEY) as mpr:
             struct = mpr.get_structure_by_material_id(mp_id)
 
         # create and add the Workflow
         wf = wf_elastic_constant(struct)
-        try:
-            task_ids_map = launchpad.add_wf(wf)
-        except:
-            print_launchpad_error()
+        # checks the size, then addds the workflow
+        task_ids_map = check_size_add_wf(struct, wf, launchpad)
+        # quits if it was not added successfully. 
+        if task_ids_map is None:
             return
 
         #create the info list for this workflow
