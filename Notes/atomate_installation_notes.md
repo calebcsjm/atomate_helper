@@ -18,9 +18,8 @@ This is meant as a supplement to the instructions found on the Atomate Installat
     - If you don’t, you will likely get a connection error that says “pymongo.errors.ServerSelectionTimeoutError: connection closed”
 7. My_qadapter.yaml
    - The default file in the installation tutorial does not contain the amount of memory requested per cpu, which is a requirement for submission on the BYU system (and it also may have needed ntasks and nodes). 
-   - One way to get around that is to add the SLURM_template.txt to your config directory, reference it as a template, and then add the information for the memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt)
-   - For further clarification, see the full text below. 
-   - The exact specifications for the runs may depend on the size of job you are using. I typically use “nodes: 1,” “ntasks: 4,” “mem-per-cpu: 4G,” and “walltime: 24:00:00,” but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
+   - One way to get around that is to add the SLURM_template.txt to your config directory, reference it as a template, and then add the information for the memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt). However, several lines needed to be added, so please see the examples below for full details. 
+   - The exact specifications for the runs may depend on the size of job you are using. I typically use “nodes: 1,” “ntasks: 4,” “mem-per-cpu: 6G,” and “walltime: 24:00:00,” but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
 8. Pymatgen and Potcars: I recommend viewing the pymatgen instructions at [POTCAR Setup](https://pymatgen.org/installation.html#potcar-setup), which are more detailed than those at on the atomate website. Note: if you copy the potpaw_PBE file, you will have to run the `pmg config` command on the directory ABOVE potpaw_PBE, or it won't do it properly. For example, if you copy the potpaw_PBE folder in a folder called potcarTempStorage, you would run `pmg config -p potcarTempStorage <MY_PSP>`
 9. Materials API Key: See the following instructions from the bottom of the pymatgen docs Usage section:  [API Setup](https://pymatgen.org/usage.html#setting-the-pmg-mapi-key-in-the-config-file)  This personal key can be generated on the Materials project website.
 10. Bash Profile:
@@ -35,7 +34,7 @@ This is meant as a supplement to the instructions found on the Atomate Installat
 **Full text for Files:**  
 I bolded lines that are added or altered from those suggested in the installation guide. Replace the values with the information for you database - if your database is named *dielectric_runs*, then replace *database_name* in the db.json file with *dielectric_runs* (preserving quotation marks where appropriate). 
 
-Db.json:
+db.json:
 <pre><code>{
 	"host":"mongodb+srv://cluster0.9esxz.mongodb.net",
 	"port":27017,
@@ -50,7 +49,7 @@ Db.json:
 }
 </code></pre>
 
-My_fireworker.yaml:
+my_fireworker.yaml:
 <pre><code>name: worker_name
 category: ''
 query: '{}'
@@ -60,7 +59,7 @@ env:
 scratch_dir: null
 </code></pre>
 
-My_launchpad.yaml:
+my_launchpad.yaml:
 <pre><code>host: mongodb+srv://cluster0.9esxz.mongodb.net
 port: 27017
 name: database_name
@@ -75,7 +74,7 @@ wf_user_indices: []
 authsource: admin</i></b>
 </code></pre>
 
-My_qadapter.yaml: 
+my_qadapter.yaml: 
 <pre><code>_fw_name: CommonAdapter
 _fw_q_type: SLURM
 <b><i>_fw_template_file: /path/atomate/config/SLURM_template.txt</i></b>
@@ -91,3 +90,39 @@ pre_rocket: null
 post_rocket: null
 logdir: /path/atomate/logs
 </code></pre>
+
+	
+SLURM_template.txt:
+<pre><code>#!/bin/bash -l
+
+#SBATCH --nodes=$${nodes}
+#SBATCH --ntasks=$${ntasks}
+#SBATCH --ntasks-per-node=$${ntasks_per_node}
+#SBATCH --ntasks-per-core=$${ntasks_per_core}
+#SBATCH --core-spec=$${core_spec}
+#SBATCH --exclude=$${exclude_nodes}
+#SBATCH --cpus-per-task=$${cpus_per_task}
+#SBATCH --gpus-per-task=$${gpus_per_task}
+#SBATCH --gres=$${gres}
+#SBATCH --qos=$${qos}
+#SBATCH --time=$${walltime}
+#SBATCH --time-min=$${time_min}
+#SBATCH --partition=$${queue}
+#SBATCH --account=$${account}
+#SBATCH --job-name=$${job_name}
+#SBATCH --license=$${license}
+#SBATCH --output=$${job_name}-%j.out
+#SBATCH --error=$${job_name}-%j.error
+#SBATCH --constraint=$${constraint}
+#SBATCH --signal=$${signal}
+#SBATCH --mem=$${mem}
+#SBATCH --mem-per-cpu=$${mem_per_cpu}
+#SBATCH --mail-type=$${mail_type}
+#SBATCH --mail-user=$${mail_user}
+<b><i>#SBATCH -C 'avx2'
+
+module purge </i></b>
+$${pre_rocket}
+cd $${launch_dir}
+$${rocket_launch}
+$${post_rocket} </code></pre>
