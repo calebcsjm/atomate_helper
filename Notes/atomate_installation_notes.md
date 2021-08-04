@@ -2,12 +2,12 @@ This is meant as a supplement to the instructions found on the Atomate Installat
 
 1. Virtual Env - Modules:
    - Instead of using the default modules on the supercomputer, purge the modules and then load python/3.8 and gcc/9 before creating the virtual environment for Atomate (you can run `module list` to see which modules are currently installed, `module purge` to remove them, `module avail` to see which ones are available, and then `module load <<module_name>>` to load new ones)
-2. Pip install the maggma package – it is a dependent package that does not get downloaded as part of atomate. 
+2. Pip install the maggma package – it is a dependent package that does not get downloaded as part of atomate.  
 3. Set up the MongoDB - see the mongodb_setup file in this folder.
 4. Db.json file:
    - The port is just 27017
    - Add the following line to the end `"authsource":"admin"`
-   - The hostname can be somewhat particular. I found this explanation on another site - "Use this connection string format: `mongodb+srv://<cluster_name>.mongodb.net`. If you have a cluster's connection string with servers' names like: cluster0-_shard-00-00-_jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0-jxeqq.mongodb.net"
+   - The hostname can be somewhat particular. I found this explanation on another site - "Use this connection string format: `mongodb+srv://<cluster_name>.mongodb.net`. If you have a cluster's connection string with servers' names like: cluster0-shard-00-00-jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0.jxeqq.mongodb.net"
     - ***NOTE:*** The system administrators for the supercomputer will have to add the IP address of the cluster to their whitelist in order for it to connect while running jobs
 5. My_fireworker.yaml
     - The vasp_cmd line was somewhat confusing. What ended up working was `srun /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi` (srun is the command to run it in parallel, and then the second part is the path to the executable). Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
@@ -81,7 +81,7 @@ _fw_q_type: SLURM
 rocket_launch: rlaunch -c /path/atomate/config rapidfire
 <b><i>nodes: 1
 ntasks: 4
-mem_per_cpu: 4G</i></b>
+mem_per_cpu: 6G</i></b>
 walltime: 24:00:00
 queue: null
 account: null
