@@ -9,6 +9,8 @@ This is meant as a supplement to the instructions found on the Atomate Installat
    - Add the following line to the end `"authsource":"admin"`
    - The hostname can be somewhat particular. I found this explanation on another site - "Use this connection string format: `mongodb+srv://<cluster_name>.mongodb.net`. If you have a cluster's connection string with servers' names like: cluster0-shard-00-00-jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0.jxeqq.mongodb.net"
     - ***NOTE:*** The system administrators for the supercomputer will have to add the IP address of the cluster to their whitelist in order for it to connect while running jobs
+      - For my server, what I ended up putting in the db.json file was `mongodb+srv://cluster0.9esxz.mongodb.net`
+      - What we sent to the RC Office were actually just the following web addresses: `cluster0-shard-00-00.9esxz.mongodb.net`,`cluster0-shard-00-01.9esxz.mongodb.net`, and `cluster0-shard-00-02.9esxz.mongodb.net`. We got those from error messages on the terminal when it failed to connect to the database.
 5. My_fireworker.yaml
     - The vasp_cmd line was somewhat confusing. What ended up working was `srun /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi` (srun is the command to run it in parallel, and then the second part is the path to the executable). Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
 6. My_launchpad.yaml
