@@ -1,4 +1,4 @@
-## Some errors encountered with atomate:
+## Some atomate Errors:
 
 - `Validation failed: VasprunXMLValidator`:
   - If the .error file for the workflow contains the above error, then that means the vasp run failed. Check the std_err.txt or vasp.out files in the Launcher to see more details and address how to solve it
