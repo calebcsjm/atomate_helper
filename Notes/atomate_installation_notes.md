@@ -7,12 +7,13 @@ This is meant as a supplement to the instructions found on the [Atomate Installa
 
 2. Virtual Env - Modules:
    - Instead of using the default modules on the supercomputer, purge the modules and then load python/3.8 and gcc/9 before creating the virtual environment for Atomate (you can run `module list` to see which modules are currently installed, `module purge` to remove them, `module avail` to see which ones are available, and then `module load <<module_name>>` to load new ones) 
+   - Make sure pip is up to date, if not run `pip install --upgrade pip`
 
 **Configure database connections and computing center parameters Section:**
 
 3. Db.json file:
    - The port is just 27017
-   - Add the following line to the end `"authsource":"admin"`
+   - Add the following line to the end `"authsource":"admin"`. Note: This is the line for setting up a MongoDb Cloud connnection - it may be different for running a server on Superhomer or a personal computer
    - The hostname can be somewhat particular. I found this explanation on another site - "Use this connection string format: `mongodb+srv://<cluster_name>.mongodb.net`. If you have a cluster's connection string with servers' names like: cluster0-shard-00-00-jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0.jxeqq.mongodb.net"
     - ***NOTE:*** The system administrators for the supercomputer will have to add the IP address of the cluster to their whitelist in order for it to connect while running jobs
       - For my server, what I ended up putting in the db.json file was `mongodb+srv://cluster0.9esxz.mongodb.net`
