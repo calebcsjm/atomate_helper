@@ -1,36 +1,48 @@
-This is meant as a supplement to the instructions found on the Atomate Installation page, based on errors I encountered and ways that I found around them. Some of these errors may have been unique to me, as I am not yet an experienced programmer. I will provide the final setup of my files at the end. 
+This is meant as a supplement to the instructions found on the [Atomate Installation page](https://atomate.org/installation.html), based on errors I encountered and ways that I found around them. Some of these errors may have been unique to me, as I am not yet an experienced programmer. I will provide the final setup of my files at the end. 
 
-1. Virtual Env - Modules:
-   - Instead of using the default modules on the supercomputer, purge the modules and then load python/3.8 and gcc/9 before creating the virtual environment for Atomate (you can run `module list` to see which modules are currently installed, `module purge` to remove them, `module avail` to see which ones are available, and then `module load <<module_name>>` to load new ones)
-2. Pip install the maggma package – it is a dependent package that does not get downloaded as part of atomate.  
-3. Set up the MongoDB - see the mongodb_setup file in this folder.
-4. Db.json file:
+**MongoDB Section:**
+1. Set up the MongoDB - see the mongodb_setup file in this folder.
+
+**Create a Python 3 virtual environment Section:**
+
+2. Virtual Env - Modules:
+   - Instead of using the default modules on the supercomputer, purge the modules and then load python/3.8 and gcc/9 before creating the virtual environment for Atomate (you can run `module list` to see which modules are currently installed, `module purge` to remove them, `module avail` to see which ones are available, and then `module load <<module_name>>` to load new ones) 
+
+**Configure database connections and computing center parameters Section:**
+
+3. Db.json file:
    - The port is just 27017
    - Add the following line to the end `"authsource":"admin"`
    - The hostname can be somewhat particular. I found this explanation on another site - "Use this connection string format: `mongodb+srv://<cluster_name>.mongodb.net`. If you have a cluster's connection string with servers' names like: cluster0-shard-00-00-jxeqq.mongodb.net, modify your server's name by removing shards' info so your <cluster_name> looks like this: cluster0.jxeqq.mongodb.net"
     - ***NOTE:*** The system administrators for the supercomputer will have to add the IP address of the cluster to their whitelist in order for it to connect while running jobs
       - For my server, what I ended up putting in the db.json file was `mongodb+srv://cluster0.9esxz.mongodb.net`
       - What we sent to the RC Office were actually just the following web addresses: `cluster0-shard-00-00.9esxz.mongodb.net`,`cluster0-shard-00-01.9esxz.mongodb.net`, and `cluster0-shard-00-02.9esxz.mongodb.net`. We got those from error messages on the terminal when it failed to connect to the database.
-5. My_fireworker.yaml
+4. My_fireworker.yaml
     - The vasp_cmd line was somewhat confusing. What ended up working was `srun /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi` (srun is the command to run it in parallel, and then the second part is the path to the executable). Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
-6. My_launchpad.yaml
+5. My_launchpad.yaml
     - Add the following two lines to the end: 
       - `ssl: True`
       - `authsource: admin`
     - If you don’t, you will likely get a connection error that says “pymongo.errors.ServerSelectionTimeoutError: connection closed”
-7. My_qadapter.yaml
+6. My_qadapter.yaml
    - The default file in the installation tutorial does not contain the amount of memory requested per cpu, which is a requirement for submission on the BYU system (and it also may have needed ntasks and nodes). 
    - One way to get around that is to add the SLURM_template.txt to your config directory, reference it as a template, and then add the information for the memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt). However, several lines needed to be added, so please see the examples below for full details. 
    - The exact specifications for the runs may depend on the size of job you are using. I typically use “nodes: 1,” “ntasks: 4,” “mem-per-cpu: 6G,” and “walltime: 24:00:00,” but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
-8. Pymatgen and Potcars: I recommend viewing the pymatgen instructions at [POTCAR Setup](https://pymatgen.org/installation.html#potcar-setup), which are more detailed than those at on the atomate website. Note: if you copy the potpaw_PBE file, you will have to run the `pmg config` command on the directory ABOVE potpaw_PBE, or it won't do it properly. For example, if you copy the potpaw_PBE folder in a folder called potcarTempStorage, you would run `pmg config -p potcarTempStorage <MY_PSP>`. POTCARs are legally protected, so you will need to access them through your research advisor's VASP license. 
-9. Materials API Key: See the following instructions from the bottom of the pymatgen docs Usage section:  [API Setup](https://pymatgen.org/usage.html#setting-the-pmg-mapi-key-in-the-config-file)  This personal key can be generated on the Materials project website.
-10. Bash Profile:
+
+**Configure pymatgen Section:**
+
+7. Pymatgen and Potcars: I recommend viewing the pymatgen instructions at [POTCAR Setup](https://pymatgen.org/installation.html#potcar-setup), which are more detailed than those at on the atomate website. Note: if you copy the potpaw_PBE file, you will have to run the `pmg config` command on the directory ABOVE potpaw_PBE, or it won't do it properly. For example, if you copy the potpaw_PBE folder in a folder called potcarTempStorage, you would run `pmg config -p potcarTempStorage <MY_PSP>`. POTCARs are legally protected, so you will need to access them through your research advisor's VASP license. 
+8. Materials API Key: See the following instructions from the bottom of the pymatgen docs Usage section:  [API Setup](https://pymatgen.org/usage.html#setting-the-pmg-mapi-key-in-the-config-file)  This personal key can be generated on the Materials project website.
+
+**Additional Notes:**
+
+9. Bash Profile:
     - If you don’t have one already, in your home directory create a file `.bash_profile`
     - Add `ulimit -s unlimited` to it – that prevents VASP from having segmentation errors
     - Also add `export FW_CONFIG_FILE=/<path>/atomate/config/FW_config.yaml,` or you will get connection errors with the mongo database
-11. [Errno 101] Network is unreachable: 
+10. [Errno 101] Network is unreachable: 
     - If you are getting this in the FW_job<<number>>.error file, then the system administrators have not yet enabled access to the cloud database – see the db.json section
-12. See the crontab_setup file on how to set up a crontab
+11. See the crontab_setup file on how to set up a crontab
 
 
 **Full text for Files:**  
