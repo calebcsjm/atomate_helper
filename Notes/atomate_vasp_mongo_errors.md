@@ -16,6 +16,9 @@
   - Add `"export FW_CONFIG_FILE=/<path>/atomate/config/FW_config.yaml"` to your `.bash_profile` in your home directory
   - If you already added it, you may need to open a new teminal window
 
+- pymongo.errors.ServerSelectionTimeoutError: cluster0-shard-00-01.9esxz.mongodb.net:27017: [Errno 101] Network is unreachable 
+  - Make sure the IP addresses were whitelisted by the computing administrators
+
 ## Some Vasp Errors:
 
 - forrtl: severe (174): SIGSEV, segmentation fault occurred
