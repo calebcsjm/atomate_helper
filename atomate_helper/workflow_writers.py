@@ -291,11 +291,12 @@ def add_elastic_mpid(mp_ids, launchpad):
     return df
 
 
-def ids_for_fizzled_runs(df, fizzled_runs):
+def mpids_from_fizzled_runs(df, fizzled_runs):
     '''This function was developed to deal with issues using the "lpad rerun_fws -s FIZZLED" command
     on the supercomputer. If that starts to work, this won't be necessary. Using the dataframe returned 
-    when you initially added the workflows, and the fw_ids returned from running the fizzled_fw_ids.py 
-    program on the supercomputer, it returns the list of mp-ids of the fizzled workflows
+    when you initially added the workflows, and the fw_ids returned from running "lpad get_wflows -s FIZZLED -d ids"
+    on the supercomputer, it returns the list of mp-ids of the fizzled workflows. Can also be used to 
+    get the mpids for paused runs. 
     
     Parameters:
         df (Pandas dataframe): Dataframe returned by add_dielectric_mpid function when you first added 
