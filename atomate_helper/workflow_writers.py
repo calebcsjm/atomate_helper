@@ -289,3 +289,38 @@ def add_elastic_mpid(mp_ids, launchpad):
     print(df)
 
     return df
+
+
+def ids_for_fizzled_runs(df, fizzled_runs):
+    '''This function was developed to deal with issues using the "lpad rerun_fws -s FIZZLED" command
+    on the supercomputer. If that starts to work, this won't be necessary. Using the dataframe returned 
+    when you initially added the workflows, and the fw_ids returned from running the fizzled_fw_ids.py 
+    program on the supercomputer, it returns the list of mp-ids of the fizzled workflows
+    
+    Parameters:
+        df (Pandas dataframe): Dataframe returned by add_dielectric_mpid function when you first added 
+            the workflows
+        fizzled_runs (int list): The list of fw_ids that failed on the supercomputer
+    Returns:
+        ids_to_rerun (str list): The mp-ids of the structures that need to be rerun
+    
+    '''
+    
+    ids_to_rerun = []
+
+    for fw_id in fizzled_runs:
+    # search for a matching fw_id in the dataframe of launched runs
+        for range_interval in df["Task ID Range"].tolist():
+
+            # get the high and low for the range
+            range_list = range_interval.split("-")
+            low = int(range_list[0])
+            high = int(range_list[1])
+
+            # add the mp-id to the list if it was fizzled
+            if low <= fw_id <= high:
+                # get the mp-id
+                mp_id = df.loc[df['Task ID Range'] == range_interval]["mp-id"].tolist()[0]
+                ids_to_rerun.append(mp_id)
+            
+    return ids_to_rerun
