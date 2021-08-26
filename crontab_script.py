@@ -1,7 +1,7 @@
 """
-Use this as the command you use to launch the qlaunch singleshot (see the crontab_setup.md file). It confirms that
-you have not exceeded the number of jobs that you would like to have running in the que
-before launching another rocket.
+Use this as the command you use to launch the qlaunch singleshot (see the crontab_setup.md file). 
+It confirms that you have not exceeded the number of jobs that you would like to have running in 
+the que before launching another rocket.
 NOTE: 
 - You will need to change the path to your username
 - Put this script in your home directory
