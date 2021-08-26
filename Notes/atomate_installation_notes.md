@@ -19,16 +19,15 @@ This is meant as a supplement to the instructions found on the [Atomate Installa
       - For my server, what I ended up putting in the db.json file was `mongodb+srv://cluster0.9esxz.mongodb.net`
       - What we sent to the RC Office were actually just the following web addresses: `cluster0-shard-00-00.9esxz.mongodb.net`,`cluster0-shard-00-01.9esxz.mongodb.net`, and `cluster0-shard-00-02.9esxz.mongodb.net`. We got those from error messages on the terminal when it failed to connect to the database.
 4. My_fireworker.yaml
-    - The vasp_cmd line was somewhat confusing. What ended up working was `srun /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi` (srun is the command to run it in parallel, and then the second part is the path to the executable). Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
+    - The vasp_cmd line can be tricky. What ended up working was `srun /fslhome/glh43/fsl_groups/fslg_msg_code/bin/vasp6_mpi` (srun is the command to run it in parallel, and then the second part is the path to the executable). Consequently, that line is NOT needed in the my_qadapter.yaml file, or in the template file if you choose to set one of those up. 
 5. My_launchpad.yaml
     - Add the following two lines to the end: 
       - `ssl: True`
       - `authsource: admin`
     - If you don’t, you will likely get a connection error that says “pymongo.errors.ServerSelectionTimeoutError: connection closed”
 6. My_qadapter.yaml
-   - The default file in the installation tutorial does not contain the amount of memory requested per cpu, which is a requirement for submission on the BYU system (and it also may have needed ntasks and nodes). 
-   - One way to get around that is to add the SLURM_template.txt to your config directory, reference it as a template, and then add the information for the memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt). However, several lines needed to be added, so please see the examples below for full details. 
-   - The exact specifications for the runs may depend on the size of job you are using. I typically use “nodes: 1,” “ntasks: 4,” “mem-per-cpu: 6G,” and “walltime: 24:00:00,” but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
+   - In order to include more specifics in the SLURM script that launches VASP, add the SLURM_template.txt to your config directory. Reference it as a template (see below), and then add the information for mem or memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt). However, several lines needed to be added, so please see the examples below for full details. 
+   - The exact specifications for the runs may depend on the size of job you are using. I would recommend using “nodes: 1,” “ntasks: 8,” “mem: 32G,” and “walltime: 24:00:00,” as a starting point, but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
 
 **Configure pymatgen Section:**
 
@@ -43,7 +42,7 @@ This is meant as a supplement to the instructions found on the [Atomate Installa
     - Also add `export FW_CONFIG_FILE=/<path>/atomate/config/FW_config.yaml,` or you will get connection errors with the mongo database
 10. [Errno 101] Network is unreachable: 
     - If you are getting this in the FW_job<<number>>.error file, then the system administrators have not yet enabled access to the cloud database – see the db.json section
-11. See the crontab_setup file on how to set up a crontab
+11. See the crontab_setup file on how to set up a crontab to launch your jobs automatically
 
 
 **Full text for Files:**  
@@ -95,8 +94,8 @@ _fw_q_type: SLURM
 <b><i>_fw_template_file: /path/atomate/config/SLURM_template.txt</i></b>
 rocket_launch: rlaunch -c /path/atomate/config rapidfire
 <b><i>nodes: 1
-ntasks: 4
-mem_per_cpu: 6G</i></b>
+ntasks: 8
+mem: 32G</i></b>
 walltime: 24:00:00
 queue: null
 account: null

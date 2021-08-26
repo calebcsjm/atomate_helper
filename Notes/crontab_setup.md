@@ -7,7 +7,7 @@ As mentioned in the atomate errors notes, if you close the terminal while the `q
 2. Paste the following code into the file, then save (adjust the paths to match your setup):
 ```
 PATH=/usr/bin:/bin:/usr/local/bin
-0 */4 * * * bash -l -c "cd /fslhome/<absolute path>/atomate/scratch; module purge; source /fslhome/<absolute path>/atomate/atomate_env/bin/activate; qlaunch rapidfire -m 10 --nlaunches 0 &>> /fslhome/<absolute path>/atomate/logs/cron_postprocess.txt"
+0 * * * * bash -l -c "cd /fslhome/calebh27/atomate/scratch; module purge; source /fslhome/calebh27/atomate/atomate_env/bin/activate; python /fslhome/calebh27/crontab_script.py &>> /fslhome/calebh27/atomate/logs/cron_postprocess.txt"
 ```
 3. Do a happy dance
 
