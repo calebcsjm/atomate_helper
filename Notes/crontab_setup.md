@@ -18,4 +18,5 @@ PATH=/usr/bin:/bin:/usr/local/bin
 4. `squeue` is not found on the PATH for cron (it only has `/usr/bin` and `/bin`, where we need `/usr/local/bin` as well), so we edit the path for cron by putting `PATH=/usr/bin:/bin:/usr/local/bin` as the first line.
 5. The values placed in `* * * * *` determine when/how often a given command runs. See [here](https://crontab.guru/examples.html) for detailed examples on how to set it up for the time you want.
 6. We can run a series of commands in between the "" as if they were being run on the bash terminal. Cron is beautifully dumb, so you have to spell everything out. Separate commands with `;`
-7. Cron hides the output that would be printed to the terminal from the commands. To store that output somewhere (which is extremely helpful in debugging), put `&>>` and then the file name that you with the ouput to be saved to. 
+7. The crontab_script.py file can be found in the main folder of the repo
+8. Cron hides the output that would be printed to the terminal from the commands. To store that output somewhere (which is extremely helpful in debugging), put `&>>` and then the file name that you with the ouput to be saved to. 
