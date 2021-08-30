@@ -10,6 +10,8 @@
   - See the [Dealing With Failures and Crashes](https://materialsproject.github.io/fireworks/failures_tutorial.html#) tutorial in the FireWorks documentation for more information
   - ***NOTE: See the crontab setup file for a partial workaround***
 
+- Structures with Tungsten (W) always fail
+  - There is a question open on the MATSCI forum about this, but it doesn't yet have a resolution. See [here](https://matsci.org/t/pymatgen-complaining-about-missing-deprecated-potcar-files/36781/5)
 ## Some Mongo Errors:
 
 - "error=AutoReconnect('localhost:27017: [Errno 111] Connection refused')"
