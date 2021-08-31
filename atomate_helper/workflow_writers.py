@@ -21,7 +21,7 @@ def print_launchpad_error():
     
     print("Error: Workflow was not added to the database. Please confirm that you have created the launchpad in the form:",
           'lp = LaunchPad(host="your_hostname", port=27017, name="db_name", username="your_admin_username", password="your_admin_password", ssl="true", authsource="admin")',
-         "You will also need to include 'from fireworks import LaunchPad' above that.)
+         "You will also need to include 'from fireworks import LaunchPad' above that.")
     
 
 def added_workflow_list_converter(task_ids_map, workflow_name, mp_id, formula=""):
