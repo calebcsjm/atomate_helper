@@ -1,6 +1,6 @@
 # Crontab Setup
 
-As mentioned in the atomate errors notes, if you close the terminal while the `qlaunch rapidfire` is still running, it will cause any incompleted workflows to fail, and always appear in the "RUNNING" state. Setting up a crontab is one way to run the jobs without having to have the terminal open. Crontab can automatically run commands at given time intervals. 
+As mentioned in the atomate errors notes, if you close the terminal while the `qlaunch rapidfire` is still running, it will cause any incompleted workflows to fail, and always appear in the "RUNNING" state. We can set up a crontab to launch the jobs in reservation mode instead, which will avoid that issue. 
 
 ## Simple Version:
 1. Run `crontab -e` in the terminal
