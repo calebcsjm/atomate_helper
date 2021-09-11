@@ -27,7 +27,8 @@ This is meant as a supplement to the instructions found on the [Atomate Installa
     - If you don’t, you will likely get a connection error that says “pymongo.errors.ServerSelectionTimeoutError: connection closed”
 6. My_qadapter.yaml
    - In order to include more specifics in the SLURM script that launches VASP, add the SLURM_template.txt to your config directory. Reference it as a template (see below), and then add the information for mem or memory per cpu. The SLURM_template.txt can copied from Github: [SLURM Template](https://github.com/materialsproject/fireworks/blob/main/fireworks/user_objects/queue_adapters/SLURM_template.txt). However, several lines needed to be added, so please see the examples below for full details. 
-   - The exact specifications for the runs may depend on the size of job you are using. I would recommend using “nodes: 1,” “ntasks: 8,” “mem: 32G,” and “walltime: 24:00:00,” as a starting point, but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
+   - In order to launch in reservation mode, you need to change the rocket_launch command to be singleshot, not rapidfire
+   - The exact specifications for the runs may depend on the size of job you are using. I would recommend using “nodes: 1,” “ntasks: 4,” “mem: 32G,” and “walltime: 24:00:00,” as a starting point, but feel free to adjust as needed. You can view the resources available on each computing node (including memory per cpu) here: [Computing Resources](https://rc.byu.edu/documentation/resources)
 
 **Configure pymatgen Section:**
 
@@ -92,9 +93,9 @@ my_qadapter.yaml:
 <pre><code>_fw_name: CommonAdapter
 _fw_q_type: SLURM
 <b><i>_fw_template_file: /path/atomate/config/SLURM_template.txt</i></b>
-rocket_launch: rlaunch -c /path/atomate/config rapidfire
+rocket_launch: rlaunch -c /path/atomate/config singleshot
 <b><i>nodes: 1
-ntasks: 8
+ntasks: 4
 mem: 32G</i></b>
 walltime: 24:00:00
 queue: null
