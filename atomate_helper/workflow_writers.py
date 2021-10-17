@@ -199,7 +199,7 @@ def add_gibbs_mpid(mp_ids, launchpad):
         # on the energy vs. volume curve.
         c = {"T_MIN": 10, "T_STEP": 10, "T_MAX": 2000,
              "POISSON": 0.20, "ANHARMONIC_CONTRIBUTION": True,
-             "DEFORMATIONS": deformations, "qha_type":"phonopy"}
+             "DEFORMATIONS": deformations, "QHA_TYPE":"phonopy"}
         
         # I added the "qha_type" above - the default appears to be "debye_model" (see line 466 at https://github.com/hackingmaterials/atomate/blob/main/atomate/vasp/workflows/presets/core.py)
         
